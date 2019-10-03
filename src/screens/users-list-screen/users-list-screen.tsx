@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {TextInput, View} from 'react-native';
 import {inject, observer} from 'mobx-react';
 import {IUserStore, USERS_STORE} from '../../stores/users';
 import {UsersList} from '../../components/users/list';
@@ -16,13 +16,23 @@ export class UsersListScreen extends React.Component<IProps> {
     usersStore.fetchUser();
   }
 
+  onChangeSearchText = (searchText: string) => {
+    const {[USERS_STORE]: usersStore} = this.props;
+
+    usersStore.setSearchText(searchText);
+  };
+
   render() {
     const {[USERS_STORE]: usersStore} = this.props;
 
     return (
       <View>
+        <TextInput
+          value={usersStore.searchText}
+          onChangeText={this.onChangeSearchText}
+        />
         <UsersList
-          data={usersStore.list}
+          data={usersStore.filteredList}
           onRefresh={usersStore.fetchUser}
           refreshing={usersStore.isLoading}
         />
